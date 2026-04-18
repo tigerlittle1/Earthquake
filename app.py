@@ -13,7 +13,7 @@ init_page("latest")
 
 # ====== 日期（自動抓最近 7 天） ======
 default_end = datetime.date.today()
-default_start = default_end - datetime.timedelta(days=7)
+default_start = default_end - datetime.timedelta(days=30)
 
 start = st.sidebar.date_input("開始日期", value=default_start)
 end = st.sidebar.date_input("結束日期", value=default_end)
