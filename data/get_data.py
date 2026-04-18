@@ -104,10 +104,26 @@ class EarthquakeData:
         """
         res = self._get_data(starttime, endtime, minmag)
         return self.parse_geojson(res)
+    def get_location_data(self, starttime, endtime, minmag=5, lon_min=119, lon_max=123, lat_min=21, lat_max=26):
+        """
+        篩選範圍內的地震資料。
+        """
+        df = self.get_data(starttime, endtime, minmag)
+        #交換大小，防呆
+        if lon_min > lon_max:
+            lon_min, lon_max = lon_max, lon_min
+        if lat_min > lat_max:
+            lat_min, lat_max = lat_max, lat_min
+        return df[
+            (df["longitude"] >= lon_min) &
+            (df["longitude"] <= lon_max) &
+            (df["latitude"] >= lat_min) &
+            (df["latitude"] <= lat_max)
+                ]
 
-        # ---------------------------------------------------------
-        # ⭐ 新增：台灣地震篩選功能
-        # ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # ⭐ 台灣地震資料
+    # ---------------------------------------------------------
     def get_taiwan_data(self, starttime, endtime, minmag=5):
         """
         篩選台灣範圍內的地震資料。
@@ -115,16 +131,10 @@ class EarthquakeData:
         - 經度：119 ~ 123
         - 緯度：21 ~ 26
         """
-        df = self.get_data(starttime, endtime, minmag)
         lon_min, lon_max = 119, 123
         lat_min, lat_max = 21, 26
+        return self.get_location_data(starttime, endtime, minmag, lon_min, lon_max, lat_min, lat_max)
 
-        return df[
-            (df["longitude"] >= lon_min) &
-            (df["longitude"] <= lon_max) &
-            (df["latitude"] >= lat_min) &
-            (df["latitude"] <= lat_max)
-                ]
 
 
 if __name__ == "__main__":
